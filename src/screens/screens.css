@@ -326,6 +326,185 @@
   color: var(--c-text-secondary);
 }
 
+/* --- Экран тайтла (native TitleScreen.js) --- */
+.titleContent {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--sp-l);
+  padding-bottom: calc(var(--sp-l) + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-m);
+}
+
+.hero {
+  display: flex;
+  gap: var(--sp-l);
+}
+
+.heroPoster {
+  width: 140px;
+  height: 210px; /* 2:3 */
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.heroInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-s);
+  justify-content: center;
+}
+
+.infoRow {
+  display: flex;
+  gap: var(--sp-s);
+}
+
+.infoLabel {
+  color: var(--c-text-secondary);
+  font-size: 13px;
+  width: 70px;
+  flex-shrink: 0;
+}
+
+.infoValue {
+  color: var(--c-text);
+  font-size: 13px;
+  flex: 1;
+  min-width: 0;
+  /* 2 строки */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.titleRating {
+  align-self: flex-start;
+  font-size: 13px;
+  padding: 2px var(--sp-s);
+}
+
+.playButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-s);
+  background: var(--c-accent);
+  border: 0;
+  border-radius: var(--r-m);
+  padding: calc(var(--sp-m) + 2px);
+  color: var(--c-accent-text);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.titleMetaRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-m);
+}
+
+.titleMetaInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-s);
+}
+
+.listButton {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-surface-elevated);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-m);
+  color: var(--c-text);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.listButton:active {
+  opacity: 0.7;
+}
+
+.announceBox {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-m);
+  padding: var(--sp-m);
+  text-align: center;
+}
+
+.announceText {
+  color: var(--c-text-secondary);
+}
+
+.timerBox {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-s);
+  color: var(--c-text-secondary);
+}
+
+.timerText {
+  color: var(--c-text-secondary);
+  font-size: 13px;
+  flex: 1;
+  min-width: 0;
+}
+
+.titleGenre {
+  color: var(--c-text);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.titleSection {
+  color: var(--c-text);
+  font-size: 17px;
+  font-weight: 600;
+  margin-top: var(--sp-s);
+}
+
+.titleDescription {
+  color: var(--c-text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.episodeWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-s);
+}
+
+.episodeChip {
+  background: var(--c-surface-elevated);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-s);
+  padding: var(--sp-s) var(--sp-m);
+  color: var(--c-text);
+  font-size: 13px;
+  cursor: pointer;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.episodeChip.chipActive {
+  font-weight: 600;
+}
+
 /* --- Настройки (native SettingsScreen.js) --- */
 .settingsContent {
   flex: 1;

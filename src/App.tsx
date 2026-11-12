@@ -7,7 +7,8 @@ import ProfileScreen from './screens/ProfileScreen';
 import ScheduleScreen from './screens/ScheduleScreen';
 import SearchScreen from './screens/SearchScreen';
 import SettingsScreen from './screens/SettingsScreen';
-import ScreenHeader from './components/ScreenHeader';
+import PlayerStub from './screens/PlayerStub';
+import TitleScreen from './screens/TitleScreen';
 import { refreshSchedule } from './api/schedule';
 import { getDb } from './db';
 import './App.css';
@@ -67,7 +68,8 @@ export default function App() {
         {/* over-экраны — во весь экран, без таб-бара (как native stack) */}
         <Route path="/search" element={<SearchScreen />} />
         <Route path="/settings" element={<SettingsScreen />} />
-        <Route path="/title/:id" element={<TitleStub />} />
+        <Route path="/title/:id" element={<TitleScreen />} />
+        <Route path="/player" element={<PlayerStub />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
@@ -109,14 +111,4 @@ function TabLayout() {
   );
 }
 
-/** Экран тайтла — этап 3 (PLAN §10). Пока заглушка. */
-function TitleStub() {
-  return (
-    <div className="app">
-      <ScreenHeader title="Аниме" />
-      <div className="center">
-        <div className="empty">Экран тайтла — этап 3 (PLAN §10)</div>
-      </div>
-    </div>
-  );
-}
+/** Заглушка удалена — настоящий TitleScreen подключён (этап 3). */

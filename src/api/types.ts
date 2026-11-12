@@ -13,6 +13,9 @@ export interface Title {
   genre?: string | null;
   year?: number | string | null;
   timer?: number | null;
+  /** Только в ответе getInfo. */
+  type?: string | null;
+  director?: string | null;
   /** Полоска «досмотрено N%» — только для карточек Истории (0…1). */
   progress?: number | null;
 }
