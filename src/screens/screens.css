@@ -1,0 +1,542 @@
+/* Стили экранов (этап 2): порт StyleSheet нативных screens.
+   Экран = колонка на всю высоту; на ПК та же телефонная колонка (PLAN §7). */
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 560px; /* телефонная колонка по центру на ПК (PLAN §7) */
+  margin: 0 auto;
+  width: 100%;
+  background: var(--c-background);
+}
+
+.center {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-m);
+  padding: var(--sp-xl);
+}
+
+.empty {
+  color: var(--c-text-secondary);
+  text-align: center;
+}
+.emptyPadded {
+  padding: var(--sp-l) var(--sp-l) 0;
+  margin-top: var(--sp-l);
+}
+
+.retry {
+  background: var(--c-accent);
+  border: 0;
+  border-radius: 999px;
+  padding: var(--sp-s) var(--sp-xl);
+  color: var(--c-accent-text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.feedList {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: var(--sp-l);
+}
+.feedFooter {
+  display: flex;
+  justify-content: center;
+  padding: var(--sp-l) 0;
+}
+
+/* --- чипы (общие для Закладок и Расписания) --- */
+.chipsScroll {
+  flex-shrink: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.chipsScroll::-webkit-scrollbar {
+  display: none;
+}
+
+.chips {
+  display: flex;
+  gap: var(--sp-s);
+  padding: 0 var(--sp-l) var(--sp-m);
+}
+
+.chip {
+  flex-shrink: 0;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--sp-l);
+  background: var(--c-surface-elevated);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-round);
+  color: var(--c-text);
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.chipActive {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-accent-text);
+  font-weight: 600;
+}
+
+.chipToday {
+  border-color: var(--c-accent); /* сегодняшний день подсвечен рамкой */
+}
+
+/* --- пейджер Закладок (native FlatList horizontal pagingEnabled) --- */
+.pager {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.pager::-webkit-scrollbar {
+  display: none;
+}
+
+.pagerPage {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+/* --- Поиск (native SearchScreen.js) --- */
+.searchHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-m);
+  padding: calc(env(safe-area-inset-top) + var(--sp-s)) var(--sp-l) var(--sp-m);
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-m);
+  color: var(--c-text);
+  padding: 12px var(--sp-m);
+  font-size: 16px;
+  outline: none;
+}
+.searchInput::placeholder {
+  color: var(--c-text-disabled);
+}
+.searchInput:focus {
+  border-color: var(--c-accent);
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-s);
+  padding: 0 var(--sp-l) var(--sp-m);
+}
+
+.filterChip {
+  max-width: 60%;
+  min-height: 0;
+  padding: var(--sp-s) var(--sp-l);
+}
+
+.clearFilters {
+  display: flex;
+  padding: var(--sp-xs);
+  border: 0;
+  background: none;
+  color: var(--c-text-secondary);
+  cursor: pointer;
+}
+
+.resultCount {
+  color: var(--c-text-secondary);
+  font-size: 13px;
+  padding: 0 var(--sp-l) var(--sp-s);
+}
+
+.pickerModal {
+  max-height: 70%;
+}
+
+.pickerList {
+  overflow-y: auto;
+  flex-shrink: 1;
+  min-height: 0;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--sp-m) var(--sp-s);
+  border: 0;
+  border-radius: var(--r-s);
+  background: none;
+  color: var(--c-text);
+  font-size: 15px;
+  cursor: pointer;
+  text-align: left;
+}
+.optionActive {
+  background: var(--c-surface);
+  color: var(--c-accent);
+  font-weight: 600;
+}
+
+/* --- Расписание (native ScheduleScreen.js) --- */
+.dayTitle {
+  color: var(--c-text);
+  font-size: 18px;
+  font-weight: 700;
+  margin: var(--sp-s) 0 var(--sp-xs);
+  padding: 0 var(--sp-l);
+}
+
+.caption {
+  color: var(--c-text-secondary);
+  font-size: 12px;
+  margin-bottom: var(--sp-m);
+  padding: 0 var(--sp-l);
+}
+
+.scheduleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-m);
+  width: calc(100% - 2 * var(--sp-l));
+  margin: 0 var(--sp-l) var(--sp-s);
+  background: var(--c-surface-elevated);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-m);
+  padding: var(--sp-m);
+  cursor: pointer;
+  text-align: left;
+}
+
+.scheduleRowTitle {
+  flex: 1;
+  color: var(--c-text);
+  font-size: 14px;
+  line-height: 19px;
+  /* 3 строки */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.scheduleRowTime {
+  color: var(--c-accent);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* --- Профиль (native ProfileScreen.js) --- */
+.profileContent {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--sp-l);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-l);
+}
+
+.rowPair {
+  display: flex;
+  gap: var(--sp-m);
+}
+
+.statBox {
+  flex: 1;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-m);
+  padding: var(--sp-l);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-xs);
+}
+
+.statValue {
+  color: var(--c-accent);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.statLabel {
+  color: var(--c-text-secondary);
+  font-size: 13px;
+}
+
+.profileSection {
+  color: var(--c-text);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.listBox {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-m);
+  padding: var(--sp-m);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-s);
+}
+
+.profileListEmpty {
+  color: var(--c-text-secondary);
+  font-size: 14px;
+}
+
+.profileListRow {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-m);
+  color: var(--c-text);
+  font-size: 14px;
+}
+
+.profileListCount {
+  color: var(--c-text-secondary);
+}
+
+/* --- Настройки (native SettingsScreen.js) --- */
+.settingsContent {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--sp-l);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-m);
+}
+
+.settingsSection {
+  color: var(--c-text);
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: var(--sp-s);
+}
+
+.settingsCard {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-m);
+  padding: 0 var(--sp-m);
+}
+
+.settingsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-m);
+  min-height: 52px;
+  width: 100%;
+  padding: var(--sp-s) 0;
+  border: 0;
+  border-bottom: 1px solid var(--c-border);
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+}
+.settingsRow:last-child {
+  border-bottom: 0;
+}
+.settingsRowLast {
+  border-bottom: 0;
+}
+
+.settingsLabel {
+  color: var(--c-text);
+  font-size: 15px;
+  min-width: 0;
+}
+
+.hiddenList {
+  color: var(--c-text-disabled);
+}
+
+.settingsListName {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-s);
+  min-width: 0;
+}
+
+.hiddenTag {
+  color: var(--c-text-secondary);
+  font-size: 11px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-round);
+  padding: 1px var(--sp-s);
+  white-space: nowrap;
+}
+
+.settingsCount {
+  color: var(--c-text-secondary);
+  font-size: 14px;
+}
+
+.segmentWrap {
+  display: flex;
+  gap: var(--sp-xs);
+  flex-shrink: 0;
+}
+
+.segment {
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-s);
+  padding: 6px var(--sp-m);
+  background: var(--c-surface-elevated);
+  color: var(--c-text);
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.segmentActive {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-accent-text);
+  font-weight: 600;
+}
+
+.settingsHint {
+  color: var(--c-text-secondary);
+  font-size: 12px;
+  padding: 0 var(--sp-s);
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--c-accent);
+  border-radius: var(--r-m);
+  padding: var(--sp-m);
+  background: none;
+  color: var(--c-accent);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* переключатель (замена RN Switch) */
+.toggle {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  border-radius: 999px;
+  border: 0;
+  background: var(--c-progress-track);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.toggleOn {
+  background: rgba(255, 122, 0, 0.33); /* accent + '55' как в нативном */
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--c-text-disabled);
+  transition: left 0.2s, background 0.2s;
+}
+
+.toggleOn .toggleThumb {
+  left: 23px;
+  background: var(--c-accent);
+}
+
+/* меню/подтверждения/ввод — расширяют .modalBackdrop/.modalCard из components.css */
+.modalAction {
+  padding: var(--sp-m) 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
+.modalAction:active {
+  opacity: 0.7;
+}
+
+.modalActionText {
+  color: var(--c-text);
+  font-size: 15px;
+}
+.modalActionText.danger {
+  color: var(--c-danger);
+}
+
+.confirmRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-l);
+}
+
+.confirmBtn {
+  border: 0;
+  background: none;
+  padding: var(--sp-s) var(--sp-m);
+  cursor: pointer;
+}
+
+.confirmText {
+  color: var(--c-text);
+  font-size: 15px;
+  font-weight: 600;
+}
+.confirmText.danger {
+  color: var(--c-danger);
+}
+.confirmText.accent {
+  color: var(--c-accent);
+}
+
+.settingsInput {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-s);
+  color: var(--c-text);
+  padding: 10px var(--sp-m);
+  font-size: 15px;
+  outline: none;
+}
+.settingsInput::placeholder {
+  color: var(--c-text-disabled);
+}
+.settingsInput:focus {
+  border-color: var(--c-accent);
+}

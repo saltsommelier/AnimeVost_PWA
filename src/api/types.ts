@@ -13,6 +13,8 @@ export interface Title {
   genre?: string | null;
   year?: number | string | null;
   timer?: number | null;
+  /** Полоска «досмотрено N%» — только для карточек Истории (0…1). */
+  progress?: number | null;
 }
 
 /** Серия из `playlist`. */

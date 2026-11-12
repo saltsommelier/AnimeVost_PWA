@@ -1,73 +1,120 @@
 import { useEffect, useState } from 'react';
-import { getLast } from './api/anime';
-import { imageUrl } from './api/images';
-import { rating10, titleName } from './api/parsers';
-import type { Title } from './api/types';
+import { IoBookmarks, IoBookmarksOutline, IoCalendar, IoCalendarOutline, IoHome, IoHomeOutline, IoPerson, IoPersonOutline } from 'react-icons/io5';
+import { NavLink, Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import BookmarksScreen from './screens/BookmarksScreen';
+import HomeScreen from './screens/HomeScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import ScheduleScreen from './screens/ScheduleScreen';
+import SearchScreen from './screens/SearchScreen';
+import SettingsScreen from './screens/SettingsScreen';
+import ScreenHeader from './components/ScreenHeader';
+import { refreshSchedule } from './api/schedule';
+import { getDb } from './db';
 import './App.css';
 
 /**
- * Каркас оболочки (этап 1, PLAN §10): нижние табы + смоук-тест ленты.
- * Роутер и настоящие экраны — этапы 2–4; сейчас проверяем, что API,
- * картинки (новый хост) и тема работают в браузере.
+ * Точка входа — порт нативного App.js + src/navigation/index.js.
+ * Сначала инициализируем БД (миграции + сид списков), затем показываем
+ * навигацию. Расписание обновляем один раз за запуск (PLAN §6.2): ошибки
+ * сети тихо игнорируем — остаёмся на кэше.
+ *
+ * Навигация (как в нативном): нижние вкладки Главная/Закладки/Расписание/
+ * Профиль; поверх — over-экраны (поиск, тайтл, настройки) БЕЗ таб-бара.
  */
-
-const TABS = ['Главная', 'Поиск', 'Расписание', 'Закладки', 'Профиль'] as const;
-
 export default function App() {
-  const [tab, setTab] = useState<(typeof TABS)[number]>('Главная');
-  const [titles, setTitles] = useState<Title[]>([]);
+  const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (tab !== 'Главная') return;
-    let cancelled = false;
-    getLast(1)
-      .then(({ data }) => {
-        if (!cancelled) setTitles(data);
-      })
-      .catch((e: Error) => {
-        if (!cancelled) setError(e.message);
-      });
+    let mounted = true;
+    getDb()
+      .then(() => mounted && setReady(true))
+      .catch((e: Error) => mounted && setError(e.message));
+    void refreshSchedule().catch(() => {
+      // тихо: остаёмся на кэше расписания (native App.js)
+    });
     return () => {
-      cancelled = true;
+      mounted = false;
     };
-  }, [tab]);
+  }, []);
 
+  if (error) {
+    return (
+      <div className="bootCenter">
+        <div className="bootError">Ошибка базы данных: {error}</div>
+      </div>
+    );
+  }
+  if (!ready) {
+    return (
+      <div className="bootCenter">
+        <div className="spinner" />
+      </div>
+    );
+  }
+
+  return (
+    <Routes>
+      {/* вкладки — с таб-баром */}
+      <Route element={<TabLayout />}>
+        <Route path="/" element={<HomeScreen />} />
+        <Route path="/bookmarks" element={<BookmarksScreen />} />
+        <Route path="/schedule" element={<ScheduleScreen />} />
+        <Route path="/profile" element={<ProfileScreen />} />
+      </Route>
+
+      {/* over-экраны — во весь экран, без таб-бара (как native stack) */}
+      <Route path="/search" element={<SearchScreen />} />
+      <Route path="/settings" element={<SettingsScreen />} />
+      <Route path="/title/:id" element={<TitleStub />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+}
+
+const TABS = [
+  { path: '/', label: 'Главная', icon: IoHome, iconOutline: IoHomeOutline },
+  { path: '/bookmarks', label: 'Закладки', icon: IoBookmarks, iconOutline: IoBookmarksOutline },
+  { path: '/schedule', label: 'Расписание', icon: IoCalendar, iconOutline: IoCalendarOutline },
+  { path: '/profile', label: 'Профиль', icon: IoPerson, iconOutline: IoPersonOutline },
+];
+
+/** Оболочка вкладок: контент + нижний таб-бар (native Tabs). */
+function TabLayout() {
   return (
     <div className="app">
       <main className="content">
-        {tab === 'Главная' &&
-          (error != null ? (
-            <p className="error">{error}</p>
-          ) : (
-            <ul className="feed">
-              {titles.map((t) => (
-                <li key={t.id} className="card">
-                  <img className="poster" src={imageUrl(t.urlImagePreview)} alt="" loading="lazy" />
-                  <div className="cardBody">
-                    <div className="cardTitle">{titleName(t.title)}</div>
-                    <div className="cardMeta">
-                      <span className="badge">{rating10(t).toFixed(2)}</span>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ))}
-        {tab !== 'Главная' && <p className="stub">Экран «{tab}» — этап 2 (PLAN §10)</p>}
+        <Outlet />
       </main>
-
       <nav className="tabbar">
         {TABS.map((t) => (
-          <button
-            key={t}
-            className={t === tab ? 'tab tabActive' : 'tab'}
-            onClick={() => setTab(t)}
+          <NavLink
+            key={t.path}
+            to={t.path}
+            end={t.path === '/'}
+            className={({ isActive }) => (isActive ? 'tab tabActive' : 'tab')}
           >
-            {t}
-          </button>
+            {({ isActive }) => (
+              <>
+                {isActive ? <t.icon size={24} /> : <t.iconOutline size={24} />}
+                <span>{t.label}</span>
+              </>
+            )}
+          </NavLink>
         ))}
       </nav>
+    </div>
+  );
+}
+
+/** Экран тайтла — этап 3 (PLAN §10). Пока заглушка. */
+function TitleStub() {
+  return (
+    <div className="app">
+      <ScreenHeader title="Аниме" />
+      <div className="center">
+        <div className="empty">Экран тайтла — этап 3 (PLAN §10)</div>
+      </div>
     </div>
   );
 }
