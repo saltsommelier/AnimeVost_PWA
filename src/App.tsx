@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { IoBookmarks, IoBookmarksOutline, IoCalendar, IoCalendarOutline, IoHome, IoHomeOutline, IoPerson, IoPersonOutline } from 'react-icons/io5';
-import { NavLink, Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, NavLink, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import BookmarksScreen from './screens/BookmarksScreen';
 import HomeScreen from './screens/HomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
@@ -54,21 +54,23 @@ export default function App() {
   }
 
   return (
-    <Routes>
-      {/* вкладки — с таб-баром */}
-      <Route element={<TabLayout />}>
-        <Route path="/" element={<HomeScreen />} />
-        <Route path="/bookmarks" element={<BookmarksScreen />} />
-        <Route path="/schedule" element={<ScheduleScreen />} />
-        <Route path="/profile" element={<ProfileScreen />} />
-      </Route>
+    <BrowserRouter>
+      <Routes>
+        {/* вкладки — с таб-баром */}
+        <Route element={<TabLayout />}>
+          <Route path="/" element={<HomeScreen />} />
+          <Route path="/bookmarks" element={<BookmarksScreen />} />
+          <Route path="/schedule" element={<ScheduleScreen />} />
+          <Route path="/profile" element={<ProfileScreen />} />
+        </Route>
 
-      {/* over-экраны — во весь экран, без таб-бара (как native stack) */}
-      <Route path="/search" element={<SearchScreen />} />
-      <Route path="/settings" element={<SettingsScreen />} />
-      <Route path="/title/:id" element={<TitleStub />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* over-экраны — во весь экран, без таб-бара (как native stack) */}
+        <Route path="/search" element={<SearchScreen />} />
+        <Route path="/settings" element={<SettingsScreen />} />
+        <Route path="/title/:id" element={<TitleStub />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
