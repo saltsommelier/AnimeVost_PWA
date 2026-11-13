@@ -1,0 +1,57 @@
+# Деплой на GitHub Pages (PLAN §13, 13.11.2026).
+# Push в main -> сборка -> публикация dist/. Адрес:
+#   проектный репозиторий: https://<user>.github.io/<repo>/
+#   репозиторий <user>.github.io: https://<user>.github.io/
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # ручной запуск из вкладки Actions
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # base зависит от типа репозитория: <user>.github.io -> '/',
+      # иначе /<repo>/ (vite.config.ts читает VITE_BASE)
+      - name: Вычислить base-путь
+        id: base
+        run: |
+          REPO="${GITHUB_REPOSITORY#*/}"
+          if [[ "$REPO" == *.github.io ]]; then
+            echo "path=/" >> "$GITHUB_OUTPUT"
+          else
+            echo "path=/$REPO/" >> "$GITHUB_OUTPUT"
+          fi
+      - run: npm run build
+        env:
+          VITE_BASE: ${{ steps.base.outputs.path }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

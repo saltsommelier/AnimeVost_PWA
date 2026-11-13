@@ -5,8 +5,15 @@ import { VitePWA } from 'vite-plugin-pwa';
 /**
  * AnimeVost PWA (PLAN.md §9). Manifest + service worker через vite-plugin-pwa.
  * Офлайн-оболочка кэшируется, API/видео — НЕ кэшируются.
+ *
+ * base: GitHub Pages у проектного репозитория отдаёт сайт из подпапки
+ * /имя-репозитория/ — CI (workflow §? deploy.yml) передаёт правильный
+ * префикс через VITE_BASE; локально и для репозитория *.github.io
+ * остаётся '/'. В manifest пути относительные (без ведущего слэша) —
+ * браузер сам разрешает их от адреса manifest.webmanifest.
  */
 export default defineConfig({
+  base: process.env.VITE_BASE || '/',
   plugins: [
     react(),
     VitePWA({
@@ -18,15 +25,16 @@ export default defineConfig({
         short_name: 'AnimeVost',
         description: 'Смотритель аниме с animevost.org',
         lang: 'ru',
-        start_url: '/',
+        start_url: '.',
+        scope: '.',
         display: 'standalone',
         background_color: '#0B0B0F',
         theme_color: '#0B0B0F',
         orientation: 'any',
         icons: [
-          { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
-          { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
       workbox: {

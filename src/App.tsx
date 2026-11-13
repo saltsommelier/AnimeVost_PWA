@@ -55,7 +55,7 @@ export default function App() {
   }
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         {/* вкладки — с таб-баром */}
         <Route element={<TabLayout />}>
