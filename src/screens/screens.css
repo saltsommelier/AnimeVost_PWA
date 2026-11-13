@@ -719,3 +719,293 @@
 .settingsInput:focus {
   border-color: var(--c-accent);
 }
+
+/* --- Плеер (native PlayerScreen.js) --- */
+.plScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+}
+
+.plVideoWrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background: #000;
+  overflow: hidden;
+}
+
+.plVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+.plVideo.stretch {
+  object-fit: fill;
+}
+
+.plTapLayer {
+  position: absolute;
+  inset: 0;
+  touch-action: none; /* жесты обрабатываем сами (свайп/тапы) */
+}
+
+/* панели всегда в дереве; скрытие — fade + выезд, касания отключаются */
+.plTop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-m);
+  padding: calc(env(safe-area-inset-top) + var(--sp-s)) var(--sp-m) var(--sp-s);
+  transition:
+    opacity 180ms ease-out,
+    transform 180ms ease-out;
+}
+
+.plIconBtn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+.plIconBtn.plDisabled {
+  opacity: 0.3;
+}
+
+.plTitle {
+  flex: 1;
+  min-width: 0;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plQualityBtn {
+  border: 1px solid #fff;
+  border-radius: var(--r-s);
+  padding: 2px var(--sp-m);
+  background: none;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.plCenterBtn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 72px;
+  height: 72px;
+  margin: -36px 0 0 -36px;
+  transition: opacity 180ms ease-out;
+}
+
+.plCenterBtnInner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  /* БЕЗ подложки и окантовки (фидбек юзера в нативном): только иконка */
+}
+
+.plBottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transition:
+    opacity 180ms ease-out,
+    transform 180ms ease-out;
+}
+
+.plHidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.plTop.plHidden {
+  transform: translateY(-24px);
+}
+.plBottom.plHidden {
+  transform: translateY(24px);
+}
+
+.plEpisodesStrip {
+  display: flex;
+  gap: var(--sp-s);
+  overflow-x: auto;
+  padding: var(--sp-s) var(--sp-m);
+  scrollbar-width: none;
+}
+.plEpisodesStrip::-webkit-scrollbar {
+  display: none;
+}
+
+.plChip {
+  flex-shrink: 0;
+  background: var(--c-surface-elevated);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-s);
+  padding: 6px var(--sp-m);
+  color: var(--c-text);
+  font-size: 13px;
+  cursor: pointer;
+  max-width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plChipActive {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-accent-text);
+  font-weight: 600;
+}
+
+.plScrubber {
+  position: relative;
+  padding: 12px 0; /* зона тапа/драга выше видимой линии */
+  touch-action: none;
+}
+
+.plTrack {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.25);
+  margin: 0 var(--sp-m);
+  position: relative;
+}
+
+.plFill {
+  height: 3px;
+  background: var(--c-accent);
+}
+
+.plScrubDot {
+  position: absolute;
+  top: -5px;
+  width: 13px;
+  height: 13px;
+  border-radius: var(--r-round);
+  background: #fff;
+  margin-left: -6px; /* центр кружка на краю заливки */
+}
+
+.plScrubBubble {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: var(--r-s);
+  padding: 4px var(--sp-s);
+  color: #fff;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.plBottomBar {
+  display: flex;
+  align-items: center;
+  padding: var(--sp-s) var(--sp-m);
+}
+
+.plTime {
+  color: #fff;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  flex: 1;
+  min-width: 90px;
+}
+
+.plFsWrap {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* группа prev/play/next — по центру экрана, под центральной кнопкой */
+.plNavRow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--sp-s) + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-m);
+  pointer-events: none; /* box-none: только кнопки ловят касания */
+}
+.plNavRow .plIconBtn {
+  pointer-events: auto;
+}
+
+.plPlayPause {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--r-round);
+}
+
+.plSeekHint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: var(--r-round);
+  padding: var(--sp-s) var(--sp-l);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  pointer-events: none;
+  z-index: 5;
+  white-space: nowrap;
+}
+
+.plBuffer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.plCenter {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-m);
+}
+
+.plHint {
+  color: var(--c-text-secondary);
+}

@@ -7,7 +7,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import ScheduleScreen from './screens/ScheduleScreen';
 import SearchScreen from './screens/SearchScreen';
 import SettingsScreen from './screens/SettingsScreen';
-import PlayerStub from './screens/PlayerStub';
+import PlayerScreen from './screens/PlayerScreen';
 import TitleScreen from './screens/TitleScreen';
 import { refreshSchedule } from './api/schedule';
 import { getDb } from './db';
@@ -69,7 +69,7 @@ export default function App() {
         <Route path="/search" element={<SearchScreen />} />
         <Route path="/settings" element={<SettingsScreen />} />
         <Route path="/title/:id" element={<TitleScreen />} />
-        <Route path="/player" element={<PlayerStub />} />
+        <Route path="/player" element={<PlayerScreen />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
