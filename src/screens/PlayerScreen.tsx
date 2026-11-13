@@ -37,8 +37,8 @@ import './screens.css';
  *
  * Отличия от нативного (PLAN §8, §12): duration браузер отдаёт сам
  * (loadedmetadata) — probeDuration не нужен; Android — fullscreen +
- * orientation.lock('landscape'), iOS lock не умеет → подсказка
- * «поверни телефон 🔄».
+ * orientation.lock('landscape'), iOS lock не умеет (видео остаётся
+ * в портрете; подсказка «поверни телефон» удалена по решению юзера).
  */
 
 const SWIPE_PX_PER_SEC = 4; // 4px ≈ 1 сек перемотки свайпом
@@ -145,7 +145,7 @@ export default function PlayerScreen() {
   }, [paused, episode]);
 
   // плеер открываем во весь экран с ландшафтом, при выходе возвращаем
-  // (PLAN §8). iOS lock не умеет — покажем подсказку «поверни телефон».
+  // (PLAN §8). iOS lock не умеет — там видео остаётся в портрете.
   useEffect(() => {
     const wrap = wrapRef.current;
     if (wrap && !document.fullscreenElement) {
@@ -157,19 +157,6 @@ export default function PlayerScreen() {
       if (document.fullscreenElement) void document.exitFullscreen().catch(() => {});
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // подсказка «поверни телефон» — только если ландшафт не получился
-  // (нет fullscreen/lock) и окно в портрете, и это тач-устройство
-  const [rotateHint, setRotateHint] = useState(false);
-  useEffect(() => {
-    const coarse = window.matchMedia('(pointer: coarse)').matches;
-    const portrait = window.matchMedia('(orientation: portrait)').matches;
-    if (coarse && portrait && !document.fullscreenElement) {
-      setRotateHint(true);
-      const t = setTimeout(() => setRotateHint(false), 4000);
-      return () => clearTimeout(t);
-    }
   }, []);
 
   const seekMode = settings?.playerSeekMode ?? 'both';
@@ -480,12 +467,8 @@ export default function PlayerScreen() {
           </div>
         )}
 
-        {/* подсказка поворота (iOS: lock не поддерживается) */}
-        {rotateHint && (
-          <div className="plSeekHint">
-            <span>поверни телефон 🔄</span>
-          </div>
-        )}
+        {/* подсказка поворота удалена (решение юзера 13.11.2026): на Android
+            lock ложит телефон сам, на iOS видео просто остаётся в портрете */}
 
         {/* верхняя панель (fade + выезд сверху) */}
         <div className={controls ? 'plTop' : 'plTop plHidden'}>

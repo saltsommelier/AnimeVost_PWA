@@ -142,7 +142,8 @@ Netflix-стиль, акцент оранжевый (токены — из `them
   (в DOM это проще — pointer events + `setPointerCapture`).
 - Автоскрытие контролов ~4с при воспроизведении; на драге не прятать.
 - **Ориентация**: Android — `screen.orientation.lock('landscape')` в fullscreen;
-  iOS — lock не поддерживается, показываем подсказку «поверни телефон 🔄».
+  iOS — lock не поддерживается (видео в портрете; подсказка поворота
+  удалена по решению юзера — §13, 13.11.2026).
 - MediaSession (локскрин/наушники), Wake Lock (экран не гаснет), PiP на ПК.
 - Запись истории: `saveProgress(position, duration, finished)` в IndexedDB,
   полоска «досмотрено N%» в ленте Истории.
@@ -179,7 +180,7 @@ Netflix-стиль, акцент оранжевый (токены — из `them
 - БД: SQLite → IndexedDB (схема та же).
 - Плеер: ExoPlayer → `<video>`; duration нативный от браузера.
 - Нет NSC/cleartext/httpify — вся сеть на https (картинки через animevost.org).
-- iOS: нет programmatic landscape lock (подсказка «поверни телефон»);
+- iOS: нет programmatic landscape lock (видео остаётся в портрете);
   Web Push только iOS 16.4+; ставить можно только из Safari.
 - Тестирование: adb/uiautomator не нужен — devtools; на Android-устройстве —
   chrome://inspect.
@@ -258,6 +259,18 @@ Netflix-стиль, акцент оранжевый (токены — из `them
   MediaSession (метаданные + play/pause/prev/next). Fullscreen API +
   попытка orientation.lock('landscape') (Chrome-only, типизован локально),
   iOS — подсказка «поверни телефон 🔄» (4с) при портрете без fullscreen.
+- **13.11.2026 — удалена подсказка «поверни телефон 🔄».** Решение юзера:
+  на Android lock сам ложит телефон в ландшафт, а в Chrome-вкладке
+  (fullscreen ещё не активен) подсказка показывалась зря и мозолила
+  глаза. Убраны state/effect/JSX целиком; lock без неё работает как
+  раньше, на iOS видео просто остаётся в портрете.
+- **13.11.2026 — хостинг на GitHub Pages (вопрос юзера).** Можно, но с
+  нюансом путей: у проектного репозитория сайт живёт в подпапке
+  `/repo-name/`, а у нас все пути в manifest/HTML абсолютные
+  (`/icon-192.png`, `start_url: '/'`) → нужен `base` в vite.config +
+  относительные пути, иначе иконки/manifest 404 и PWA не установится.
+  Проще: репозиторий `<user>.github.io` (сайт от корня, правок путей
+  не нужно) либо Cloudflare Pages/Netlify (root из коробки, drag-and-drop).
   Живая проверка CDP: src https://video.animetop.info, duration 24:52,
   currentTime идёт, next → «2 серия», История записана (ep/pos/pct),
   после выхода «Продолжить: 2 серия». Исключений ноль.
