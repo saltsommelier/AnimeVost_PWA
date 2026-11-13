@@ -284,6 +284,16 @@ Netflix-стиль, акцент оранжевый (токены — из `them
   им не является → Chrome отказывается ставить. Обходы (см. §12):
   флаг `unsafely-treat-insecure-origin-as-secure` на телефоне либо
   Port forwarding по USB; финальный тест — на https-хостинге.
+- **13.11.2026 — «установилось, но открывается в Chrome».** Сборка верна
+  (manifest link, MIME application/manifest+json, display standalone —
+  проверено). Корень: «Установить приложение» на Android создаёт WebAPK,
+  который собирает сервер Google — он сам заходит на сайт за manifest.
+  LAN-адрес (192.168.x.x) из интернета недостижим → minting падает →
+  Chrome молча ставит обычный ярлык, тот открывается вкладкой. Флаг
+  unsafely-treat… не помогает (он локальный, Google по-прежнему не видит
+  сайт). Настоящая установка = публичный https-хостинг (Netlify Drop /
+  Cloudflare Pages: drag-and-drop папки `dist/`). Отладка функционала
+  допустима и в ярлыке-вкладке: всё, кроме standalone-рамки, работает.
 - **12.11.2026 — баг: белый/пустой экран после этапа 2.** Симптом: тёмный
   фон и ничего больше; DOM-дамп показывал вечный boot-спиннер. Диагноз через
   CDP-консоль headless Chrome: `Uncaught Error: useRoutes() may be used only
