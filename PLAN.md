@@ -190,6 +190,18 @@ Netflix-стиль, акцент оранжевый (токены — из `them
   preview -- --host` и открыть Network-адрес (в dev `--host` SW не
   регистрируется полноценно). Для chrome://inspect телефон подключают
   USB-кабелем, отладка включается в «Настройки → Для разработчиков».
+  Брандмауэр Windows: входящие на 4173/5173 должны быть разрешены для
+  профиля Private (правило «AnimeVost PWA dev/preview»).
+- **Secure context — главное ограничение теста с телефона.** Service
+  worker регистрируется только на `https://…` или `localhost`; адрес вида
+  `http://192.168.x.x:4173` — не secure context → Chrome пишет «приложение
+  нельзя установить». Обходы: (а) флаг chrome://flags
+  `unsafely-treat-insecure-origin-as-secure` = `http://192.168.x.x:4173`
+  → Relaunch (живёт до очистки данных Chrome); (б) честнее — chrome://inspect
+  Port forwarding `4173 → localhost:4173` по USB (localhost на телефоне =
+  secure context). Финальная проверка установки — на https-хостинге
+  (Cloudflare Pages / Netlify: drag-and-drop папки `dist/`, https из
+  коробки).
 - Push «новая серия» — вне скоупа первого релиза (нужен свой мини-бэкенд).
 
 ## 13. Журнал решений и багфиксов
@@ -265,6 +277,13 @@ Netflix-стиль, акцент оранжевый (токены — из `them
   (`vite --host`) и процедура теста с телефона — §12. Прод-сборка
   проверена `vite preview` + HTTP: manifest.webmanifest / sw.js /
   все иконки / index.html = 200.
+- **13.11.2026 — «приложение нельзя установить» на телефоне.** Диагноз:
+  не баг сборки — SW-регистрация в порядке (`registerSW` в main.tsx),
+  manifest полный. Причина платформенная: service worker требует secure
+  context (`https` или `localhost`), а LAN-адрес `http://192.168.x.x:4173`
+  им не является → Chrome отказывается ставить. Обходы (см. §12):
+  флаг `unsafely-treat-insecure-origin-as-secure` на телефоне либо
+  Port forwarding по USB; финальный тест — на https-хостинге.
 - **12.11.2026 — баг: белый/пустой экран после этапа 2.** Симптом: тёмный
   фон и ничего больше; DOM-дамп показывал вечный boot-спиннер. Диагноз через
   CDP-консоль headless Chrome: `Uncaught Error: useRoutes() may be used only
