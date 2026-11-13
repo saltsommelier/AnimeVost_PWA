@@ -278,6 +278,21 @@ Netflix-стиль, акцент оранжевый (токены — из `them
   Публикация: `npm run build` → drag-and-drop папки `dist/` в
   dash.cloudflare.com → Pages → Upload assets; адрес вида
   `имя.pages.dev` с https — на нём настоящая установка WebAPK.
+- **13.11.2026 — выбран GitHub Pages (финальное решение юзера; Cloudflare
+  отложен).** Подготовлен деплой (коммит a0d18fa): workflow
+  `.github/workflows/deploy.yml` (push в main → `npm ci` + `npm run build`
+  → publish `dist/`; base вычисляется из имени репозитория: `*.github.io`
+  → `/`, иначе `/<repo>/` через VITE_BASE). Для подпапки добавлены:
+  `basename={import.meta.env.BASE_URL}` в BrowserRouter (иначе абсолютные
+  `to="/…"` уводят из подпапки), относительные пути в manifest
+  (`start_url/scope: '.'`, иконки без ведущего слэша — браузер разрешает
+  их от адреса manifest), `%BASE_URL%` для favicon/apple-touch-icon в
+  index.html. SPA-fallback: `postbuild` копирует `dist/index.html` →
+  `dist/404.html` (Pages отдаёт её для ненайденных путей — стандартный
+  трюк вместо Cloudflare `_redirects`; `_redirects` оставлен в public —
+  не мешает). Проверено обе сборки локально: base `/` и `/animevost/`
+  (пути в HTML/JS переписаны, иконки в корне dist). Включение: Settings →
+  Pages → Source «GitHub Actions» (один раз), затем push.
   Живая проверка CDP: src https://video.animetop.info, duration 24:52,
   currentTime идёт, next → «2 серия», История записана (ep/pos/pct),
   после выхода «Продолжить: 2 серия». Исключений ноль.
