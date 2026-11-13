@@ -271,6 +271,13 @@ Netflix-стиль, акцент оранжевый (токены — из `them
   относительные пути, иначе иконки/manifest 404 и PWA не установится.
   Проще: репозиторий `<user>.github.io` (сайт от корня, правок путей
   не нужно) либо Cloudflare Pages/Netlify (root из коробки, drag-and-drop).
+- **13.11.2026 — выбран Cloudflare Pages (решение юзера).** Правок путей
+  не требуется (сайт от корня). Добавлен `public/_redirects`
+  (`/* /index.html 200`) — SPA-fallback: без него обновление страницы на
+  внутреннем маршруте (`/title/123`, `/player`) дало бы 404 от Pages.
+  Публикация: `npm run build` → drag-and-drop папки `dist/` в
+  dash.cloudflare.com → Pages → Upload assets; адрес вида
+  `имя.pages.dev` с https — на нём настоящая установка WebAPK.
   Живая проверка CDP: src https://video.animetop.info, duration 24:52,
   currentTime идёт, next → «2 серия», История записана (ep/pos/pct),
   после выхода «Продолжить: 2 серия». Исключений ноль.
