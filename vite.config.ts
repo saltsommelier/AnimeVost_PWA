@@ -11,7 +11,8 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg'],
+      // PNG-иконки тоже в пре-кэш SW (favicon.svg уже есть в index.html)
+      includeAssets: ['favicon.svg', 'icon-192.png', 'icon-512.png', 'icon-180.png'],
       manifest: {
         name: 'AnimeVost',
         short_name: 'AnimeVost',
