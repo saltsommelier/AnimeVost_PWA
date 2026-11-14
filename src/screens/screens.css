@@ -551,6 +551,13 @@
 .settingsRowLast {
   border-bottom: 0;
 }
+/* для строк с тремя широкими сегментами: label сверху, сегменты ниже
+   на всю ширину (порт нативного rowStack) */
+.settingsRowStack {
+  flex-direction: column;
+  align-items: stretch;
+  gap: calc(var(--sp-xs, 4px) + 2px);
+}
 
 .settingsLabel {
   color: var(--c-text);
@@ -819,6 +826,41 @@
   height: 72px;
   margin: -36px 0 0 -36px;
   transition: opacity 180ms ease-out;
+}
+
+/* строка [prev][play][next] в центре видео (режим 'На видео') */
+.plCenterRow {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-36px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-m);
+  transition: opacity 180ms ease-out;
+}
+
+.plCenterRowPlay {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 0;
+  /* БЕЗ подложки — как plCenterBtn (фидбек юзера) */
+}
+
+/* встроенная группа prev/play/next в нижнем баре (режим 'На панели') */
+.plPanelControls {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-m);
 }
 
 .plCenterBtnInner {

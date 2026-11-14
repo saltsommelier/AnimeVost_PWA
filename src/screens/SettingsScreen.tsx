@@ -112,6 +112,26 @@ export default function SettingsScreen() {
               onChange={(v) => void applySetting('playerStretch', v)}
             />
           </div>
+          <div className="settingsRow settingsRowStack">
+            <span className="settingsLabel">Кнопки плеера</span>
+            <div className="segmentWrap">
+              <Segment
+                label="На видео"
+                active={settings.playerControls === 'video'}
+                onPress={() => void applySetting('playerControls', 'video')}
+              />
+              <Segment
+                label="На панели"
+                active={settings.playerControls === 'panel'}
+                onPress={() => void applySetting('playerControls', 'panel')}
+              />
+              <Segment
+                label="И там и там"
+                active={settings.playerControls === 'both'}
+                onPress={() => void applySetting('playerControls', 'both')}
+              />
+            </div>
+          </div>
           <div className="settingsRow settingsRowLast">
             <span className="settingsLabel">Тип перемотки</span>
             <div className="segmentWrap">
@@ -131,6 +151,13 @@ export default function SettingsScreen() {
                 onPress={() => void applySetting('playerSeekMode', 'both')}
               />
             </div>
+          </div>
+          <div className="settingsRow settingsRowLast">
+            <span className="settingsLabel">Лента серий на панели</span>
+            <Toggle
+              checked={Boolean(settings.playerEpisodesStrip)}
+              onChange={(v) => void applySetting('playerEpisodesStrip', v)}
+            />
           </div>
         </div>
         <div className="settingsHint">Двойной тап перематывает на ±10 секунд</div>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { imageUrl } from '../api/images';
-import { isAnnouncement, rating10, titleName } from '../api/parsers';
+import { isAnnouncement, rating10, titleName, yearText } from '../api/parsers';
 import type { Title } from '../api/types';
 import CardModal from './CardModal';
 import { useLongPress } from '../lib/useLongPress';
@@ -64,6 +64,7 @@ export default function AnimeCard({
               {meta != null && <span className="metaText">{meta}</span>}
             </div>
           )}
+          {yearText(item.year) && <div className="cardYear">{yearText(item.year)}</div>}
           <div className="cardDescription">
             {item.description?.trim() || 'Описание отсутствует'}
           </div>

@@ -60,3 +60,14 @@ export function nextEpDate(timer: number | null | undefined): string | null {
   if (!timer || timer * 1000 < Date.now()) return null;
   return new Date(timer * 1000).toLocaleDateString('ru-RU');
 }
+
+/**
+ * Год выхода для карточки: поле year приходит числом или строкой вида
+ * «2026» / «2026 год.» — приводим к чистому «2026». Пусто → null
+ * (строку на карточке не рисуем). Порт нативного yearText.
+ */
+export function yearText(year: number | string | null | undefined): string | null {
+  if (year == null || year === '') return null;
+  const s = String(year).replace(/\s*год\.?\s*$/i, '').trim();
+  return s || null;
+}

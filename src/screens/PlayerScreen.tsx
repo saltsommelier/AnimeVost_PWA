@@ -162,6 +162,10 @@ export default function PlayerScreen() {
   const seekMode = settings?.playerSeekMode ?? 'both';
   const autoNext = settings?.playerAutoNext ?? true;
   const stretch = settings?.playerStretch ?? false;
+  // где живут play/pause + prev/next: 'video' — в центре видео одной строкой,
+  // 'panel' — в нижней панели, 'both' — как раньше (центр + группа над панелью)
+  const controlsLayout = settings?.playerControls ?? 'both';
+  const showStrip = settings?.playerEpisodesStrip ?? true;
 
   const seekTo = useCallback((sec: number) => {
     const max = durRef.current > 0 ? durRef.current : sec;
@@ -487,33 +491,69 @@ export default function PlayerScreen() {
           </button>
         </div>
 
-        {/* центральная кнопка play/pause (только fade) */}
-        <div className={controls ? 'plCenterBtn' : 'plCenterBtn plHidden'}>
-          <button
-            type="button"
-            className="plCenterBtnInner"
-            onClick={() => setPaused((p) => !p)}
-            aria-label={paused ? 'Играть' : 'Пауза'}
-          >
-            {paused ? <IoPlay size={38} /> : <IoPause size={38} />}
-          </button>
-        </div>
+        {/* play/pause: 'video' — ОДНА строка в центре видео [prev][play][next]
+            (порт нативного, фидбек юзера); 'both' — центральная кнопка; 'panel' —
+            не рендерим, кнопки живут в нижней панели */}
+        {controlsLayout === 'video' ? (
+          <div className={controls ? 'plCenterRow' : 'plCenterRow plHidden'}>
+            <button
+              type="button"
+              className={`plIconBtn ${!hasPrev ? 'plDisabled' : ''}`}
+              onClick={() => goToEpisode(index - 1)}
+              disabled={!hasPrev}
+              aria-label="Предыдущая серия"
+            >
+              <IoPlaySkipBack size={24} />
+            </button>
+            <button
+              type="button"
+              className="plCenterRowPlay"
+              onClick={() => setPaused((p) => !p)}
+              aria-label={paused ? 'Играть' : 'Пауза'}
+            >
+              {paused ? <IoPlay size={38} /> : <IoPause size={38} />}
+            </button>
+            <button
+              type="button"
+              className={`plIconBtn ${!hasNext ? 'plDisabled' : ''}`}
+              onClick={() => goToEpisode(index + 1)}
+              disabled={!hasNext}
+              aria-label="Следующая серия"
+            >
+              <IoPlaySkipForward size={24} />
+            </button>
+          </div>
+        ) : controlsLayout === 'both' && (
+          <div className={controls ? 'plCenterBtn' : 'plCenterBtn plHidden'}>
+            <button
+              type="button"
+              className="plCenterBtnInner"
+              onClick={() => setPaused((p) => !p)}
+              aria-label={paused ? 'Играть' : 'Пауза'}
+            >
+              {paused ? <IoPlay size={38} /> : <IoPause size={38} />}
+            </button>
+          </div>
+        )}
 
         {/* нижний блок: серии + прогресс + время/кнопки (выезд снизу) */}
         <div className={controls ? 'plBottom' : 'plBottom plHidden'}>
-          {/* серии: горизонтальная лента — видны ВСЕ серии */}
-          <div className="plEpisodesStrip">
-            {episodes.map((ep, idx) => (
-              <button
-                type="button"
-                key={`${ep.name}-${idx}`}
-                className={`plChip ${idx === index ? 'plChipActive' : ''}`}
-                onClick={() => goToEpisode(idx)}
-              >
-                {ep.name}
-              </button>
-            ))}
-          </div>
+          {/* серии: горизонтальная лента — видны ВСЕ серии.
+              Выключается настройкой playerEpisodesStrip */}
+          {showStrip && (
+            <div className="plEpisodesStrip">
+              {episodes.map((ep, idx) => (
+                <button
+                  type="button"
+                  key={`${ep.name}-${idx}`}
+                  className={`plChip ${idx === index ? 'plChipActive' : ''}`}
+                  onClick={() => goToEpisode(idx)}
+                >
+                  {ep.name}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* прогресс: тап/драг по линии = перемотка (как в обычных плеерах) */}
           <div
@@ -539,6 +579,37 @@ export default function PlayerScreen() {
             <span className="plTime">
               {fmtTime(position)} / {fmtTime(duration)}
             </span>
+            {/* режим 'panel': play/pause + prev/next живут здесь, на панели */}
+            {controlsLayout === 'panel' && (
+              <div className="plPanelControls">
+                <button
+                  type="button"
+                  className={`plIconBtn ${!hasPrev ? 'plDisabled' : ''}`}
+                  onClick={() => goToEpisode(index - 1)}
+                  disabled={!hasPrev}
+                  aria-label="Предыдущая серия"
+                >
+                  <IoPlaySkipBack size={22} />
+                </button>
+                <button
+                  type="button"
+                  className="plIconBtn plPlayPause"
+                  onClick={() => setPaused((p) => !p)}
+                  aria-label={paused ? 'Играть' : 'Пауза'}
+                >
+                  {paused ? <IoPlay size={26} /> : <IoPause size={26} />}
+                </button>
+                <button
+                  type="button"
+                  className={`plIconBtn ${!hasNext ? 'plDisabled' : ''}`}
+                  onClick={() => goToEpisode(index + 1)}
+                  disabled={!hasNext}
+                  aria-label="Следующая серия"
+                >
+                  <IoPlaySkipForward size={22} />
+                </button>
+              </div>
+            )}
             <div className="plFsWrap">
               <button
                 type="button"
@@ -551,35 +622,38 @@ export default function PlayerScreen() {
             </div>
           </div>
 
-          {/* группа prev/play/next — по центру экрана, под центральной кнопкой */}
-          <div className="plNavRow">
-            <button
-              type="button"
-              className={`plIconBtn ${!hasPrev ? 'plDisabled' : ''}`}
-              onClick={() => goToEpisode(index - 1)}
-              disabled={!hasPrev}
-              aria-label="Предыдущая серия"
-            >
-              <IoPlaySkipBack size={24} />
-            </button>
-            <button
-              type="button"
-              className="plIconBtn plPlayPause"
-              onClick={() => setPaused((p) => !p)}
-              aria-label={paused ? 'Играть' : 'Пауза'}
-            >
-              {paused ? <IoPlay size={28} /> : <IoPause size={28} />}
-            </button>
-            <button
-              type="button"
-              className={`plIconBtn ${!hasNext ? 'plDisabled' : ''}`}
-              onClick={() => goToEpisode(index + 1)}
-              disabled={!hasNext}
-              aria-label="Следующая серия"
-            >
-              <IoPlaySkipForward size={24} />
-            </button>
-          </div>
+          {/* группа prev/play/next — только 'both' (И там и там): в 'video'
+              кнопки в центре видео (plCenterRow), в 'panel' — в нижнем баре */}
+          {controlsLayout === 'both' && (
+            <div className="plNavRow">
+              <button
+                type="button"
+                className={`plIconBtn ${!hasPrev ? 'plDisabled' : ''}`}
+                onClick={() => goToEpisode(index - 1)}
+                disabled={!hasPrev}
+                aria-label="Предыдущая серия"
+              >
+                <IoPlaySkipBack size={24} />
+              </button>
+              <button
+                type="button"
+                className="plIconBtn plPlayPause"
+                onClick={() => setPaused((p) => !p)}
+                aria-label={paused ? 'Играть' : 'Пауза'}
+              >
+                {paused ? <IoPlay size={28} /> : <IoPause size={28} />}
+              </button>
+              <button
+                type="button"
+                className={`plIconBtn ${!hasNext ? 'plDisabled' : ''}`}
+                onClick={() => goToEpisode(index + 1)}
+                disabled={!hasNext}
+                aria-label="Следующая серия"
+              >
+                <IoPlaySkipForward size={24} />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

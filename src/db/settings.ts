@@ -11,6 +11,8 @@ export const SETTINGS_DEFAULTS = {
   playerAutoNext: true, // автопереход к следующей серии
   playerStretch: false, // растягивать видео по ширине экрана
   playerSeekMode: 'both' as 'swipe' | 'doubletap' | 'both', // (двойной тап = ±10 сек фиксировано)
+  playerControls: 'both' as 'video' | 'panel' | 'both', // где кнопки play/pause + prev/next
+  playerEpisodesStrip: true, // лента серий на нижней панели плеера
 };
 
 export type SettingsMap = typeof SETTINGS_DEFAULTS;

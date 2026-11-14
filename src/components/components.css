@@ -178,6 +178,13 @@
   overflow: hidden;
 }
 
+/* год выхода — под рейтингом (порт нативного) */
+.cardYear {
+  color: var(--c-text-secondary);
+  font-size: 12px;
+  margin-top: -2px; /* прижать к строке рейтинга */
+}
+
 .progressTrack {
   position: absolute;
   left: 0;
